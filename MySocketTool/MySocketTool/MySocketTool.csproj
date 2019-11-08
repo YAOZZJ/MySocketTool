@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{38DAB81C-AA2F-4E63-ADA7-A3F59881380A}</ProjectGuid>
+    <ProjectGuid>{7A462825-33E1-47B9-B12D-EE44BE8A86C2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MySocketTool</RootNamespace>
     <AssemblyName>MySocketTool</AssemblyName>

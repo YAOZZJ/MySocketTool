@@ -15,11 +15,7 @@ namespace MySocketTool.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            MessageAll = "";
-            MessageCurrent = "";
-            _trace = new MyTraceListener();
-            Trace.Listeners.Add(_trace);
-            _trace.PropertyChanged += traceOnPropertyChanged;
+
         }
         #region "Action"
         void Action1()
@@ -47,18 +43,10 @@ namespace MySocketTool.ViewModel
         {
             Trace.WriteLine(msg);
         }
-        void traceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Trace")
-                MessageAll += $"{DateTime.Now.ToString(" HH:mm:ss fff")} | {_trace.Trace}";
-            MessageCurrent = _trace.Trace.Replace("\r", "").Replace("\n", "");
-        }
+
         #endregion
 
         #region "Variable"
-        string _messageAll;
-        string _messageCurrent;
-        MyTraceListener _trace;
         #endregion
 
         #region "Command"
@@ -74,8 +62,6 @@ namespace MySocketTool.ViewModel
         public RelayCommand Cmd3 { get => cmd3 ?? (cmd3 = new RelayCommand(Action3)); }
         public RelayCommand Cmd4 { get => cmd4 ?? (cmd4 = new RelayCommand(Action4)); }
         public RelayCommand Cmd5 { get => cmd5 ?? (cmd5 = new RelayCommand(Action5)); }
-        public string MessageAll { get => _messageAll; set => Set(ref _messageAll, value); }
-        public string MessageCurrent { get => _messageCurrent; set => Set(ref _messageCurrent, value); }
         #endregion
     }
 }

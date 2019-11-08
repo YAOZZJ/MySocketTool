@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <StatusBar Grid.Row="1" Grid.ColumnSpan="3">
             <StatusBarItem>
-                <TextBlock Text="{Binding MessageCurrent}"/>
+                <TextBlock Name="TxtCurrrent"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
@@ -33,7 +33,7 @@
             </StatusBarItem>
         </StatusBar>
         <Grid Grid.Column="2">
-            <TextBox Text="{Binding MessageAll}" IsReadOnly="True" MinWidth="100" Grid.Row="1"
+            <TextBox IsReadOnly="True" MinWidth="100" Grid.Row="1"
                  Name="TxtAll" TextChanged="TxtAll_TextChanged"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
         </Grid>
