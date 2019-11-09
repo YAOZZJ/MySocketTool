@@ -191,5 +191,9 @@ namespace MyToolkits.Sockets
         public Action<Exception> HandleException { get; set; }
 
         #endregion
+
+        #region 测试功能用
+        #endregion
+
     }
 }

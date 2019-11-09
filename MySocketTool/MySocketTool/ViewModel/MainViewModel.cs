@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using MySocketTool.Service;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace MySocketTool.ViewModel
 {
@@ -18,7 +19,13 @@ namespace MySocketTool.ViewModel
 
 
         #region "Action"
-
+        void ActionTcpClientConnect()
+        {
+            if (_client == null) _client = new MyClient();
+            if (!_socketclientConnected) { _client.Connect(2333); _socketclientConnected = true; return; }
+            else _client.Disconnect();
+            _socketclientConnected = false;
+        }
         void Action1()
         {
             Message("Main | " + MethodBase.GetCurrentMethod().Name);
@@ -49,6 +56,8 @@ namespace MySocketTool.ViewModel
 
         #region "Variable"
         MyServer _server;
+        MyClient _client;
+        bool _socketclientConnected = false;
         #endregion
 
         #region "Command"
@@ -57,6 +66,7 @@ namespace MySocketTool.ViewModel
         RelayCommand cmd3;
         RelayCommand cmd4;
         RelayCommand cmd5;
+        RelayCommand cmdSocketTcpClientConnect;
         #endregion
         #region "Public"
         public RelayCommand Cmd1 { get => cmd1 ?? (cmd1 = new RelayCommand(Action1)); }
@@ -64,6 +74,7 @@ namespace MySocketTool.ViewModel
         public RelayCommand Cmd3 { get => cmd3 ?? (cmd3 = new RelayCommand(Action3)); }
         public RelayCommand Cmd4 { get => cmd4 ?? (cmd4 = new RelayCommand(Action4)); }
         public RelayCommand Cmd5 { get => cmd5 ?? (cmd5 = new RelayCommand(Action5)); }
+        public RelayCommand CmdSocketTcpClientConnect { get => cmdSocketTcpClientConnect ?? (cmdSocketTcpClientConnect = new RelayCommand(ActionTcpClientConnect)); }
         #endregion
     }
 }

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MySocketTool"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        Height="600" Width="400"
         Title="MainWindow" >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -22,25 +23,42 @@
                 <TextBlock Name="TxtCurrrent"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding Cmd1}" Margin="0 0 5 0">Btn1</Button>
-                    <Button Command="{Binding Cmd2}" Margin="0 0 5 0">Btn2</Button>
-                    <Button Command="{Binding Cmd3}" Margin="0 0 5 0">Btn3</Button>
-                    <Button Command="{Binding Cmd4}" Margin="0 0 5 0">Btn4</Button>
-                    <Button Command="{Binding Cmd5}" Margin="0 0 5 0">Btn5</Button>
-                    <ProgressBar IsIndeterminate="True" Width="100" Height="10"/>
-                </StackPanel>
+                <ProgressBar IsIndeterminate="True" Width="100" Height="10"/>
             </StatusBarItem>
         </StatusBar>
         <Grid Grid.Column="2">
-            <TextBox IsReadOnly="True" MinWidth="100" Grid.Row="1"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBox IsReadOnly="True" MinWidth="100" Grid.Row="0"
                  Name="TxtAll" TextChanged="TxtAll_TextChanged"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            <ListView Grid.Row="2" MinHeight="50"></ListView>
+            <StackPanel Orientation="Horizontal" Grid.Row="3">
+                <Button Click="Button_Click" Margin="0 0 5 0">Clear</Button>
+                <Button Command="{Binding Cmd2}" Margin="0 0 5 0">Btn2</Button>
+                <Button Command="{Binding Cmd3}" Margin="0 0 5 0">Btn3</Button>
+                <Button Command="{Binding Cmd4}" Margin="0 0 5 0">Btn4</Button>
+                <Button Command="{Binding Cmd5}" Margin="0 0 0 0">Btn5</Button>
+            </StackPanel>
+            <GridSplitter Grid.Row="1" Height="3" Margin="0 2 0 2" Background="Purple"
+                      VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
         </Grid>
         <GridSplitter Grid.Column="1" Width="3" Margin="2,0,2,0" Background="Purple"
                       VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
         <TabControl Grid.Column="0">
-            
+            <TabItem Header="Server"></TabItem>
+            <TabItem Header="Client">
+                <StackPanel>
+                    <ToggleButton Command="{Binding CmdSocketTcpClientConnect}">Connect</ToggleButton>
+                    <Button>Send</Button>
+                    <TextBox MinWidth="100" Grid.Row="0"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

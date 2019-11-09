@@ -271,5 +271,8 @@ namespace MyToolkits.Sockets
         public Action<SocketConnection, SocketServer> HandleClientClose { get; set; }
 
         #endregion
+
+        #region 测试功能用
+        #endregion
     }
 }

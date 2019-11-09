@@ -209,6 +209,11 @@ namespace MyToolkits.Sockets
 
         #endregion
 
+        #region 公有变量
+        public bool Connected { get => IsSocketConnected();  }
+
+        #endregion
+
         #region 事件处理
 
         /// <summary>
@@ -237,5 +242,9 @@ namespace MyToolkits.Sockets
         public Action<Exception> HandleException { get; set; }
 
         #endregion
+
+        #region 测试功能用
+        #endregion
+
     }
 }

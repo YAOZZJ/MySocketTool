@@ -51,5 +51,10 @@ namespace MySocketTool
         {
             TxtAll.ScrollToEnd();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            TxtAll.Clear();
+        }
     }
 }
