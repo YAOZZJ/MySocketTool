@@ -1,46 +1,34 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace MyToolkits.Socket
+namespace MyToolkits.Sockets
 {
     /// <summary>
-    /// Socket客户端
+    /// Socket连接,双向通信
     /// </summary>
-    public class SocketClient
+    public class SocketConnection
     {
         #region 构造函数
-
-        /// <summary>
-        /// 构造函数,连接服务器IP地址默认为本机127.0.0.1
-        /// </summary>
-        /// <param name="port">监听的端口</param>
-        public SocketClient(int port)
-        {
-            _ip = "127.0.0.1";
-            _port = port;
-        }
-
+        
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="ip">监听的IP地址</param>
-        /// <param name="port">监听的端口</param>
-        public SocketClient(string ip, int port)
+        /// <param name="socket">维护的Socket对象</param>
+        /// <param name="server">维护此连接的服务对象</param>
+        public SocketConnection(Socket socket,SocketServer server)
         {
-            _ip = ip;
-            _port = port;
+            _socket = socket;
+            _server = server;
         }
 
         #endregion
 
-        #region 内部成员
-
-        private Socket _socket = null;
-        private string _ip = "";
-        private int _port = 0;
+        #region 私有成员
+        
+        private readonly Socket _socket;
         private bool _isRec=true;
+        private SocketServer _server = null;
         private bool IsSocketConnected()
         {
             bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
@@ -51,6 +39,10 @@ namespace MyToolkits.Socket
                 return true;
         }
 
+        #endregion
+
+        #region 外部接口
+
         /// <summary>
         /// 开始接受客户端消息
         /// </summary>
@@ -58,7 +50,7 @@ namespace MyToolkits.Socket
         {
             try
             {
-                byte[] container = new byte[1024 * 1024 * 2];
+                byte[] container = new byte[1024 * 1024 * 4];
                 _socket.BeginReceive(container, 0, container.Length, SocketFlags.None, asyncResult =>
                 {
                     try
@@ -73,9 +65,15 @@ namespace MyToolkits.Socket
                         {
                             byte[] recBytes = new byte[length];
                             Array.Copy(container, 0, recBytes, 0, length);
-
-                            //处理消息
-                            HandleRecMsg?.BeginInvoke(recBytes, this,null,null);
+                            try
+                            {
+                                //处理消息
+                                HandleRecMsg?.BeginInvoke(recBytes, this, _server, null, null);
+                            }
+                            catch (Exception ex)
+                            {
+                                HandleException?.Invoke(ex);
+                            }
                         }
                         else
                             Close();
@@ -94,46 +92,6 @@ namespace MyToolkits.Socket
             }
         }
 
-        #endregion
-
-        #region 外部接口
-
-        /// <summary>
-        /// 开始服务，连接服务端
-        /// </summary>
-        public void StartClient()
-        {
-            try
-            {
-                //实例化 套接字 （ip4寻址协议，流式传输，TCP协议）
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                //创建 ip对象
-                IPAddress address = IPAddress.Parse(_ip);
-                //创建网络节点对象 包含 ip和port
-                IPEndPoint endpoint = new IPEndPoint(address, _port);
-                //将 监听套接字  绑定到 对应的IP和端口
-                _socket.BeginConnect(endpoint, asyncResult =>
-                {
-                    try
-                    {
-                        _socket.EndConnect(asyncResult);
-                        //开始接受服务器消息
-                        StartRecMsg();
-
-                        HandleClientStarted?.BeginInvoke(this,null,null);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleException?.BeginInvoke(ex,null,null);
-                    }
-                }, null);
-            }
-            catch (Exception ex)
-            {
-                HandleException?.BeginInvoke(ex,null,null);
-            }
-        }
-
         /// <summary>
         /// 发送数据
         /// </summary>
@@ -147,7 +105,7 @@ namespace MyToolkits.Socket
                     try
                     {
                         int length = _socket.EndSend(asyncResult);
-                        HandleSendMsg?.BeginInvoke(bytes, this,null,null);
+                        HandleSendMsg?.BeginInvoke(bytes, this, _server,null,null);
                     }
                     catch (Exception ex)
                     {
@@ -175,7 +133,7 @@ namespace MyToolkits.Socket
         /// </summary>
         /// <param name="msgStr">字符串消息</param>
         /// <param name="encoding">使用的编码</param>
-        public void Send(string msgStr, Encoding encoding)
+        public void Send(string msgStr,Encoding encoding)
         {
             Send(encoding.GetBytes(msgStr));
         }
@@ -186,7 +144,7 @@ namespace MyToolkits.Socket
         public object Property { get; set; }
 
         /// <summary>
-        /// 关闭与服务器的连接
+        /// 关闭当前连接
         /// </summary>
         public void Close()
         {
@@ -194,7 +152,8 @@ namespace MyToolkits.Socket
             {
                 _isRec = false;
                 _socket.Disconnect(false);
-                HandleClientClose?.BeginInvoke(this,null,null);
+                _server.RemoveConnection(this);
+                HandleClientClose?.BeginInvoke(this, _server,null,null);
             }
             catch (Exception ex)
             {
@@ -212,24 +171,19 @@ namespace MyToolkits.Socket
         #region 事件处理
 
         /// <summary>
-        /// 客户端连接建立后回调
+        /// 客户端连接接受新的消息后调用
         /// </summary>
-        public Action<SocketClient> HandleClientStarted { get; set; }
-
-        /// <summary>
-        /// 处理接受消息的委托
-        /// </summary>
-        public Action<byte[], SocketClient> HandleRecMsg { get; set; }
+        public Action<byte[], SocketConnection, SocketServer> HandleRecMsg { get; set; }
 
         /// <summary>
         /// 客户端连接发送消息后回调
         /// </summary>
-        public Action<byte[], SocketClient> HandleSendMsg { get; set; }
+        public Action<byte[], SocketConnection, SocketServer> HandleSendMsg { get; set; }
 
         /// <summary>
         /// 客户端连接关闭后回调
         /// </summary>
-        public Action<SocketClient> HandleClientClose { get; set; }
+        public Action<SocketConnection, SocketServer> HandleClientClose { get; set; }
 
         /// <summary>
         /// 异常处理程序

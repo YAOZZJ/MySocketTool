@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MyTraceListener.cs" />
+    <Compile Include="Service\MyServer.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
@@ -123,8 +124,12 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Service\" />
+    <ProjectReference Include="..\MyToolkits.Sockets\MyToolkits.Sockets.csproj">
+      <Project>{37187234-e318-46b3-84df-990de766a7c9}</Project>
+      <Name>MyToolkits.Sockets</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace MyToolkits.Socket
+namespace MyToolkits.Sockets
 {
     /// <summary>
     /// Socket服务端

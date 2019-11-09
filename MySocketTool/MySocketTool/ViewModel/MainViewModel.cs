@@ -1,8 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MySocketTool.Service;
-using SuperSocket.SocketBase;
-using SuperSocket.SocketBase.Protocol;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -15,12 +13,9 @@ namespace MySocketTool.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            _server = new MyServer();
         }
 
-        private void _server_NewSessionConnected(SuperSocket.SocketBase.AppSession session)
-        {
-            session.Send("fff");
-        }
 
         #region "Action"
 
@@ -53,6 +48,7 @@ namespace MySocketTool.ViewModel
         #endregion
 
         #region "Variable"
+        MyServer _server;
         #endregion
 
         #region "Command"
