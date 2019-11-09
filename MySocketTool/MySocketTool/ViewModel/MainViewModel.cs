@@ -1,8 +1,8 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MyToolkits.Log.TraceLog;
-using System;
-using System.ComponentModel;
+using MySocketTool.Service;
+using SuperSocket.SocketBase;
+using SuperSocket.SocketBase.Protocol;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -15,9 +15,15 @@ namespace MySocketTool.ViewModel
         /// </summary>
         public MainViewModel()
         {
-
         }
+
+        private void _server_NewSessionConnected(SuperSocket.SocketBase.AppSession session)
+        {
+            session.Send("fff");
+        }
+
         #region "Action"
+
         void Action1()
         {
             Message("Main | " + MethodBase.GetCurrentMethod().Name);
