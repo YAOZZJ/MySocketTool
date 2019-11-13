@@ -26,6 +26,11 @@ namespace MySocketTool.ViewModel
             else _client.Disconnect();
             _socketclientConnected = false;
         }
+        void ActionTcpClientSend()
+        {
+            if (!_socketclientConnected || !_client.Connected) return;
+            _client.Send(ClientSendData);
+        }
         void Action1()
         {
             Message("Main | " + MethodBase.GetCurrentMethod().Name);
@@ -67,14 +72,19 @@ namespace MySocketTool.ViewModel
         RelayCommand cmd4;
         RelayCommand cmd5;
         RelayCommand cmdSocketTcpClientConnect;
+        RelayCommand cmdSocketTcpClientSend;
         #endregion
         #region "Public"
+
+        public string ClientSendData { get; set; }
+
         public RelayCommand Cmd1 { get => cmd1 ?? (cmd1 = new RelayCommand(Action1)); }
         public RelayCommand Cmd2 { get => cmd2 ?? (cmd2 = new RelayCommand(Action2)); }
         public RelayCommand Cmd3 { get => cmd3 ?? (cmd3 = new RelayCommand(Action3)); }
         public RelayCommand Cmd4 { get => cmd4 ?? (cmd4 = new RelayCommand(Action4)); }
         public RelayCommand Cmd5 { get => cmd5 ?? (cmd5 = new RelayCommand(Action5)); }
         public RelayCommand CmdSocketTcpClientConnect { get => cmdSocketTcpClientConnect ?? (cmdSocketTcpClientConnect = new RelayCommand(ActionTcpClientConnect)); }
+        public RelayCommand CmdSocketTcpClientSend { get => cmdSocketTcpClientSend ?? (cmdSocketTcpClientSend = new RelayCommand(ActionTcpClientSend)); }
         #endregion
     }
 }

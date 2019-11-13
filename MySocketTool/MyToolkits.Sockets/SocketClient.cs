@@ -167,7 +167,7 @@ namespace MyToolkits.Sockets
         /// <param name="msgStr">字符串</param>
         public void Send(string msgStr)
         {
-            Send(Encoding.UTF8.GetBytes(msgStr));
+            Send(Encoding.Default.GetBytes(msgStr));
         }
 
         /// <summary>

@@ -25,22 +25,42 @@ namespace MySocketTool.Service
             //绑定当收到服务器发送的消息后的处理事件
             _client.HandleRecMsg = new Action<byte[], SocketClient>((bytes, theClient) =>
             {
-                string msg = Encoding.UTF8.GetString(bytes);
+                string msg = Encoding.Default.GetString(bytes);
                 Debug.WriteLine($"MyClient |收到消息:{msg}");
+                theClient.Send($"MyClient |收到消息:{msg}", Encoding.Default);
             });
-
-            //绑定向服务器发送消息后的处理事件
-            _client.HandleSendMsg = new Action<byte[], SocketClient>((bytes, theClient) =>
-            {
-                string msg = Encoding.UTF8.GetString(bytes);
-                Debug.WriteLine($"MyClient |向服务器发送消息:{msg}");
-            });
-
             _client.StartClient();
         }
         public void Disconnect()
         {
             _client.Close();
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="bytes">数据字节</param>
+        public void Send(byte[] bytes)
+        {
+            _client.Send(bytes);
+        }
+
+        /// <summary>
+        /// 发送字符串（默认使用UTF-8编码）
+        /// </summary>
+        /// <param name="msgStr">字符串</param>
+        public void Send(string msgStr)
+        {
+            _client.Send(msgStr);
+        }
+
+        /// <summary>
+        /// 发送字符串（使用自定义编码）
+        /// </summary>
+        /// <param name="msgStr">字符串消息</param>
+        /// <param name="encoding">使用的编码</param>
+        public void Send(string msgStr, Encoding encoding)
+        {
+            _client.Send(encoding.GetBytes(msgStr));
         }
         #endregion
 

@@ -54,8 +54,8 @@
             <TabItem Header="Client">
                 <StackPanel>
                     <ToggleButton Command="{Binding CmdSocketTcpClientConnect}">Connect</ToggleButton>
-                    <Button>Send</Button>
-                    <TextBox MinWidth="100" Grid.Row="0"
+                    <Button Command="{Binding CmdSocketTcpClientSend}">Send</Button>
+                    <TextBox MinWidth="100" Grid.Row="0" Text="{Binding ClientSendData}"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </TabItem>
