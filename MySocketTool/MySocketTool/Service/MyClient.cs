@@ -29,6 +29,17 @@ namespace MySocketTool.Service
                 Debug.WriteLine($"MyClient |收到消息:{msg}");
                 theClient.Send($"MyClient |收到消息:{msg}", Encoding.Default);
             });
+            //连接成功事件
+            _client.HandleClientStarted = new Action<SocketClient>((theClient) =>
+            {
+                
+                Debug.WriteLine($"MyClient |Connected with {_client.RemoteIPEndPoint.Address} {_client.RemoteIPEndPoint.Port}");
+            });
+            _client.HandleClientClose = new Action<SocketClient>((theClient) =>
+            { 
+                Debug.WriteLine($"MyClient |Disonnected with {Ip} {Port}");
+
+            });
             _client.StartClient();
         }
         public void Disconnect()

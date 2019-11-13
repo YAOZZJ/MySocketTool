@@ -97,7 +97,15 @@ namespace MyToolkits.Sockets
         #endregion
 
         #region 外部接口
+        public EndPoint RemoteEndPoint { get => _socket.RemoteEndPoint; }
+        public IPEndPoint RemoteIPEndPoint { get => (IPEndPoint)_socket.RemoteEndPoint; }
+        public EndPoint LocalEndPoint { get => _socket.LocalEndPoint; }
+        public IPEndPoint LocalIPEndPoint { get => (IPEndPoint)_socket.LocalEndPoint; }
+        public bool Connected { get => IsSocketConnected(); }
 
+        #endregion
+
+        #region 公共方法
         /// <summary>
         /// 开始服务，连接服务端
         /// </summary>
@@ -105,8 +113,8 @@ namespace MyToolkits.Sockets
         {
             try
             {
-                //实例化 套接字 （ip4寻址协议，流式传输，TCP协议）
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                   //实例化 套接字 （ip4寻址协议，流式传输，TCP协议）
+                   _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 //创建 ip对象
                 IPAddress address = IPAddress.Parse(_ip);
                 //创建网络节点对象 包含 ip和port
@@ -206,11 +214,6 @@ namespace MyToolkits.Sockets
                 GC.Collect();
             }
         }
-
-        #endregion
-
-        #region 公有变量
-        public bool Connected { get => IsSocketConnected();  }
 
         #endregion
 

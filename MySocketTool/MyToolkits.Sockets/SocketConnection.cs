@@ -27,12 +27,40 @@ namespace MyToolkits.Sockets
         #region 私有成员
         
         private readonly Socket _socket;
-        private bool _isRec=true;
+
         private SocketServer _server = null;
+
+        private bool _isRec = true;//Close 则false
+
+        /// <summary>
+        /// 判断Socket是否Connect
+        /// </summary>
+        /// <returns></returns>
         private bool IsSocketConnected()
         {
+            //Poll ,检查 Socket 的状态
+            //确定 Socket 是否为可读
+            /*
+              public enum SelectMode
+             {
+
+                 SelectRead = 0,  //     读状态模式。
+
+                 SelectWrite = 1, //     写状态模式。
+
+                 SelectError = 2, //     错误状态模式。
+
+             }
+             Read:
+             1.  如果已调用Listen并且有挂起的连接，则为true。
+
+            2．如果有数据可供读取，则为true。
+
+            3．如果连接已关闭、重置或终止，则返回true。
+             */
             bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
-            bool part2 = (_socket.Available == 0);
+            bool part2 = (_socket.Available == 0);//从网络接收的、可供读取的数据的字节数
+            //连接已关闭或网络接收可供读取字节数为0则false
             if (part1 && part2)
                 return false;
             else

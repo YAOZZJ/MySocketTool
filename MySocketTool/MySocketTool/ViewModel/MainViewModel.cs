@@ -28,7 +28,7 @@ namespace MySocketTool.ViewModel
         }
         void ActionTcpClientSend()
         {
-            if (!_socketclientConnected || !_client.Connected) return;
+            if (!_socketclientConnected || !_client.Connected || string.IsNullOrEmpty(ClientSendData)) return;
             _client.Send(ClientSendData);
         }
         void Action1()
