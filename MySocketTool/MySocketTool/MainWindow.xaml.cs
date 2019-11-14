@@ -54,5 +54,13 @@ namespace MySocketTool
                 TxtBox1.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
             }
         }
+
+        private void TxtBox2_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TxtBox2.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+        }
     }
 }

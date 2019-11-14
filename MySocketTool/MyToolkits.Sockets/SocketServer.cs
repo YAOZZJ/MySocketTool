@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
 namespace MyToolkits.Sockets
@@ -111,6 +112,51 @@ namespace MyToolkits.Sockets
             {
                 HandleException?.BeginInvoke(ex, null, null);
             }
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        /// <param name="bytes">数据字节</param>
+        public void Send(byte[] bytes)
+        {
+            try
+            {
+                _socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, asyncResult =>
+                {
+                    try
+                    {
+                        int length = _socket.EndSend(asyncResult);
+                        //HandleSendMsg?.BeginInvoke(bytes, this, null, null);
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleException?.BeginInvoke(ex, null, null);
+                    }
+                }, null);
+            }
+            catch (Exception ex)
+            {
+                HandleException?.BeginInvoke(ex, null, null);
+            }
+        }
+
+        /// <summary>
+        /// 发送字符串（默认使用UTF-8编码）
+        /// </summary>
+        /// <param name="msgStr">字符串</param>
+        public void Send(string msgStr)
+        {
+            Send(Encoding.Default.GetBytes(msgStr));
+        }
+
+        /// <summary>
+        /// 发送字符串（使用自定义编码）
+        /// </summary>
+        /// <param name="msgStr">字符串消息</param>
+        /// <param name="encoding">使用的编码</param>
+        public void Send(string msgStr, Encoding encoding)
+        {
+            Send(encoding.GetBytes(msgStr));
         }
 
         /// <summary>
