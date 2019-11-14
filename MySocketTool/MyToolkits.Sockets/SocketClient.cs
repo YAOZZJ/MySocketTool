@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -73,7 +74,6 @@ namespace MyToolkits.Sockets
                         {
                             byte[] recBytes = new byte[length];
                             Array.Copy(container, 0, recBytes, 0, length);
-
                             //处理消息
                             HandleRecMsg?.BeginInvoke(recBytes, this,null,null);
                         }
@@ -206,12 +206,13 @@ namespace MyToolkits.Sockets
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex,null,null);
+                HandleException?.BeginInvoke(ex, null, null);
             }
             finally
             {
-                _socket.Dispose();
-                GC.Collect();
+                //主动断开连接会触发异常,先屏蔽
+                //_socket.Dispose();
+                //GC.Collect();
             }
         }
 

@@ -1,12 +1,11 @@
 ﻿<Window x:Class="MySocketTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MySocketTool"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
-        Height="600" Width="400"
+        Height="600" Width="600"
         Title="MainWindow" >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,10 +52,44 @@
             <TabItem Header="Server"></TabItem>
             <TabItem Header="Client">
                 <StackPanel>
-                    <ToggleButton Command="{Binding CmdSocketTcpClientConnect}">Connect</ToggleButton>
-                    <Button Command="{Binding CmdSocketTcpClientSend}">Send</Button>
-                    <TextBox MinWidth="100" Grid.Row="0" Text="{Binding ClientSendData}"
-                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="IP:"/>
+                        <TextBlock Grid.Column="2" Text="Port:"/>
+                        <ComboBox Grid.Column="1" IsEditable="True" SelectedIndex="0" 
+                                  ItemsSource="{Binding DefaultIPList}"
+                                  Text="{Binding IpServer,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
+                        <ComboBox Grid.Column="3" IsEditable="True" SelectedIndex="0"
+                                  ItemsSource="{Binding DefaultPortList}"
+                                  Text="{Binding PortServer,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
+                        <ToggleButton Command="{Binding CmdSocketTcpClientConnect}" Grid.Column="4"
+                                      IsChecked="{Binding SocketclientConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">Connect</ToggleButton>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox MinWidth="100" Grid.Row="0" Text="{Binding ClientSendData, Mode=TwoWay}" 
+                                 PreviewKeyDown="TextBox_PreviewKeyDown" Name="TxtBox1"
+                                 AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <TextBox.InputBindings>
+                                <!--键盘事件绑定-->
+                                <KeyBinding Command="{Binding CmdSocketTcpClientSend}" Key="Enter"/>
+                                <!--鼠标事件绑定-->
+                                <!--<MouseBinding Command="{Binding ButtonClick}" MouseAction="LeftDoubleClick"/>-->
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Command="{Binding CmdSocketTcpClientSend}" Grid.Column="1">Send
+                        </Button>
+                    </Grid>
                 </StackPanel>
             </TabItem>
         </TabControl>

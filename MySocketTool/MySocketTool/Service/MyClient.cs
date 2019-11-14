@@ -35,10 +35,16 @@ namespace MySocketTool.Service
                 
                 Debug.WriteLine($"MyClient |Connected with {_client.RemoteIPEndPoint.Address} {_client.RemoteIPEndPoint.Port}");
             });
+            //断开连接事件
             _client.HandleClientClose = new Action<SocketClient>((theClient) =>
             { 
                 Debug.WriteLine($"MyClient |Disonnected with {Ip} {Port}");
 
+            });
+            //
+            _client.HandleException = new Action<Exception>((ex) =>
+            {
+                Debug.WriteLine($"MyClient |{ex.Message}");
             });
             _client.StartClient();
         }
@@ -86,7 +92,7 @@ namespace MySocketTool.Service
         public int Port { get => _port; set => _port = value; }
         public string Ip { get => _ip; set => _ip = value; }
 
-        public bool Connected{ get => _client.Connected; }
+        public bool Connected{ get => _client == null?false:_client.Connected; }
         #endregion
     }
 }

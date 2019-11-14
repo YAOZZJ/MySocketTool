@@ -1,9 +1,9 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MySocketTool.Service;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 
 namespace MySocketTool.ViewModel
 {
@@ -15,6 +15,18 @@ namespace MySocketTool.ViewModel
         public MainViewModel()
         {
             _server = new MyServer();
+            PortServer = 2333;
+            IpServer = "127.0.0.1";
+            DefaultPortList = new ObservableCollection<int>()
+                {
+                    9600,2333
+                };
+            DefaultIPList = new ObservableCollection<string>()
+            {
+            "127.0.0.1",
+            "192.168.250.1",
+            "192.168.250.10"
+            };
         }
 
 
@@ -22,18 +34,18 @@ namespace MySocketTool.ViewModel
         void ActionTcpClientConnect()
         {
             if (_client == null) _client = new MyClient();
-            if (!_socketclientConnected) { _client.Connect(2333); _socketclientConnected = true; return; }
+            if (!SocketclientConnected) { _client.Connect(PortServer, IpServer); return; }
             else _client.Disconnect();
-            _socketclientConnected = false;
         }
         void ActionTcpClientSend()
         {
-            if (!_socketclientConnected || !_client.Connected || string.IsNullOrEmpty(ClientSendData)) return;
+            if (!SocketclientConnected || string.IsNullOrEmpty(ClientSendData)) return;
             _client.Send(ClientSendData);
         }
         void Action1()
         {
             Message("Main | " + MethodBase.GetCurrentMethod().Name);
+
         }
         void Action2()
         {
@@ -62,7 +74,8 @@ namespace MySocketTool.ViewModel
         #region "Variable"
         MyServer _server;
         MyClient _client;
-        bool _socketclientConnected = false;
+        int _portServer;
+        string _ipServer;
         #endregion
 
         #region "Command"
@@ -77,7 +90,11 @@ namespace MySocketTool.ViewModel
         #region "Public"
 
         public string ClientSendData { get; set; }
-
+        public int PortServer { get => _portServer; set => Set(ref _portServer, value); }
+        public string IpServer { get => _ipServer; set => Set(ref _ipServer,value); }
+        public ObservableCollection<int> DefaultPortList { get; set; }
+        public ObservableCollection<string> DefaultIPList { get; set; }
+        public bool SocketclientConnected { get => _client == null ? false : _client.Connected;  }
         public RelayCommand Cmd1 { get => cmd1 ?? (cmd1 = new RelayCommand(Action1)); }
         public RelayCommand Cmd2 { get => cmd2 ?? (cmd2 = new RelayCommand(Action2)); }
         public RelayCommand Cmd3 { get => cmd3 ?? (cmd3 = new RelayCommand(Action3)); }
@@ -85,6 +102,7 @@ namespace MySocketTool.ViewModel
         public RelayCommand Cmd5 { get => cmd5 ?? (cmd5 = new RelayCommand(Action5)); }
         public RelayCommand CmdSocketTcpClientConnect { get => cmdSocketTcpClientConnect ?? (cmdSocketTcpClientConnect = new RelayCommand(ActionTcpClientConnect)); }
         public RelayCommand CmdSocketTcpClientSend { get => cmdSocketTcpClientSend ?? (cmdSocketTcpClientSend = new RelayCommand(ActionTcpClientSend)); }
+
         #endregion
     }
 }
