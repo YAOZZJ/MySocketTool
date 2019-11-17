@@ -12,34 +12,45 @@ namespace MyToolkits.Log.TraceLog
     public class MyTraceListener : TraceListener, INotifyPropertyChanged
     {
         //private readonly StringBuilder _builder;
-        string _builder;
+        List<string> _builder;
+        int _maxMessageTmp = 10000;
         //string _builder2;
 
         public MyTraceListener()
         {
             //_builder = new StringBuilder();
-            _builder = "";
+            //_builder = "";
             //_builder2 = "";
+            _builder = new List<string>();
         }
 
         //public string Trace => _builder.ToString();
-        public string Trace => _builder;
+        //public string Trace => _builder;
+        public List<string> Trace => _builder;
         //public string Trace2 => _builder2;
 
         public override void Write(string message)
         {
             //_builder.Append(message);
-            _builder = message;
+            //_builder = message;
             //_builder2 = message;
+            if (_builder.Count > _maxMessageTmp) _builder.Clear();
+            _builder.Add(message);
             OnPropertyChanged(new PropertyChangedEventArgs("Trace"));
         }
 
         public override void WriteLine(string message)
         {
             //_builder.AppendLine(message);
-            _builder = message + "\r\n";
+            //_builder = message + "\r\n";
+            if (_builder.Count > _maxMessageTmp) _builder.Clear();
+            _builder.Add(message + "\r\n");
             //_builder2 = message;
             OnPropertyChanged(new PropertyChangedEventArgs("Trace"));
+        }
+        public void Clear()
+        {
+            _builder.Clear();
         }
 
         #region INotifyPropertyChanged Members

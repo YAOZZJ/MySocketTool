@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -67,6 +68,13 @@ namespace MyToolkits.Sockets
                 return true;
         }
 
+        #endregion
+
+        #region 公共成员
+        public EndPoint RemoteEndPoint { get => _socket.RemoteEndPoint; }
+        public IPEndPoint RemoteIPEndPoint { get => (IPEndPoint)_socket.RemoteEndPoint; }
+        public EndPoint LocalEndPoint { get => _socket.LocalEndPoint; }
+        public IPEndPoint LocalIPEndPoint { get => (IPEndPoint)_socket.LocalEndPoint; }
         #endregion
 
         #region 外部接口

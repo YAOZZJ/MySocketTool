@@ -1,6 +1,8 @@
 ﻿using MyToolkits.Sockets;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 
 namespace MySocketTool.Service
@@ -97,6 +99,10 @@ namespace MySocketTool.Service
         #region 公共变量
         public int Port { get => _port; set => _port = value; }
         public string Ip { get => _ip; set => _ip = value; }
+        public IPEndPoint RemoteIPEndPoint { get => (IPEndPoint)_server.RemoteEndPoint; }
+        public EndPoint LocalEndPoint { get => _server.LocalEndPoint; }
+        public IPEndPoint LocalIPEndPoint { get => (IPEndPoint)_server.LocalEndPoint; }
+        public List<EndPoint> RemoteEndPointList => _server.GetRemoteEndPointList();
 
         #endregion
 

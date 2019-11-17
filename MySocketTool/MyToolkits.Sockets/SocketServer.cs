@@ -52,7 +52,7 @@ namespace MyToolkits.Sockets
                 {
                     try
                     {
-                        Socket newSocket = _socket.EndAccept(asyncResult);
+                        Socket newSocket = _socket.EndAccept(asyncResult);//异步接受传入的连接尝试。
 
                         //马上进行下一轮监听,增加吞吐量
                         if (_isListen)
@@ -87,6 +87,11 @@ namespace MyToolkits.Sockets
 
         #region 外部接口
 
+        public EndPoint RemoteEndPoint { get => _socket.RemoteEndPoint; }
+        public IPEndPoint RemoteIPEndPoint { get => (IPEndPoint)_socket.RemoteEndPoint; }
+        public EndPoint LocalEndPoint { get => _socket.LocalEndPoint; }
+        public IPEndPoint LocalIPEndPoint { get => (IPEndPoint)_socket.LocalEndPoint; }
+
         /// <summary>
         /// 开始服务，监听客户端
         /// </summary>
@@ -94,16 +99,20 @@ namespace MyToolkits.Sockets
         {
             try
             {
-                //实例化套接字（ip4寻址协议，流式传输，TCP协议）
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 //创建ip对象
                 IPAddress address = IPAddress.Parse(_ip);
                 //创建网络节点对象包含ip和port
                 IPEndPoint endpoint = new IPEndPoint(address, _port);
+                //--------------------------------------------------------------------------------------
+                //实例化套接字（ip4寻址协议，流式传输，TCP协议）
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                //--------------------------------------------------------------------------------------
                 //将 监听套接字绑定到 对应的IP和端口
                 _socket.Bind(endpoint);
+                //--------------------------------------------------------------------------------------
                 //设置监听队列长度为Int32最大值(同时能够处理连接请求数量)
                 _socket.Listen(int.MaxValue);
+                //--------------------------------------------------------------------------------------
                 //开始监听客户端
                 StartListen();
                 HandleServerStarted?.BeginInvoke(this, null, null);
@@ -121,18 +130,12 @@ namespace MyToolkits.Sockets
         {
             try
             {
-                _socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, asyncResult =>
+                //LinkedListNode<SocketConnection> node = _clientList.First;
+                //node.Value.Send(bytes);
+                foreach(var node in GetConnectionList())
                 {
-                    try
-                    {
-                        int length = _socket.EndSend(asyncResult);
-                        //HandleSendMsg?.BeginInvoke(bytes, this, null, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleException?.BeginInvoke(ex, null, null);
-                    }
-                }, null);
+                    node.Send(bytes);
+                }
             }
             catch (Exception ex)
             {
@@ -267,6 +270,16 @@ namespace MyToolkits.Sockets
             {
                 RWLock_ClientList.ExitReadLock();
             }
+        }
+        public List<EndPoint> GetRemoteEndPointList()
+        {
+            if (_clientList == null) return null;
+            List<EndPoint> endPoints = new List<EndPoint>();
+            foreach(var node in _clientList)
+            {
+                endPoints.Add(node.RemoteEndPoint);
+            }
+            return endPoints;
         }
 
         #endregion

@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MySocketTool.Service;
+using MyToolkits.Sockets;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -37,7 +38,6 @@ namespace MySocketTool.ViewModel
             };
         }
 
-
         #region "Action"
         void ActionTcpClientConnect()
         {
@@ -67,11 +67,16 @@ namespace MySocketTool.ViewModel
         }
         void Action2()
         {
-            Message("Main | " + MethodBase.GetCurrentMethod().Name);
+            //Message("Main | " + MethodBase.GetCurrentMethod().Name);
+            //foreach(string ip in NetHelper.GetLocalIP())
+            foreach(var end in _server.RemoteEndPointList)
+            {
+                Message("Main | " + end.ToString());
+            }
         }
         void Action3()
         {
-            Message("Main | " + MethodBase.GetCurrentMethod().Name);
+            //Message("Main | " + MethodBase.GetCurrentMethod().Name);
         }
         void Action4()
         {
@@ -92,6 +97,7 @@ namespace MySocketTool.ViewModel
         #region "Variable"
         MyServer _server;
         MyClient _client;
+
         int _portServer;
         string _ipServer;
         int _portClient;
@@ -109,6 +115,7 @@ namespace MySocketTool.ViewModel
         RelayCommand cmdSocketTcpServerListen;
         RelayCommand cmdSocketTcpServerSend;
         #endregion
+
         #region "Public"
 
         public string ServerSendData { get; set; }
