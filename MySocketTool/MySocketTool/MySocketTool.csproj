@@ -78,8 +78,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MyTraceListener.cs" />
-    <Compile Include="Service\MyClient.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\MyClientViewModel.cs" />
     <Compile Include="ViewModel\MyServerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

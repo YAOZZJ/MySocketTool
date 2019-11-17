@@ -97,13 +97,14 @@
                 </StackPanel>
 
             </TabItem>
-            <TabItem Header="Client">
+            <TabItem Header="Client"
+                     DataContext="{Binding Source={StaticResource Locator}, Path=MyClient}">
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="12"/>
-                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -111,31 +112,30 @@
                         <TextBlock Grid.Column="0" Text="IP:"/>
                         <TextBlock Grid.Column="3" Text="Port:"/>
                         <ComboBox Grid.Column="1" IsEditable="True" SelectedIndex="0" 
-                                  ItemsSource="{Binding DefaultIPListClient}"
-                                  Text="{Binding IpClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Grid.ColumnSpan="2"></ComboBox>
+                                  ItemsSource="{Binding IpList}"
+                                  Text="{Binding Ip,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Grid.ColumnSpan="2"></ComboBox>
                         <ComboBox Grid.Column="4" IsEditable="True" SelectedIndex="0"
-                                  ItemsSource="{Binding DefaultPortListClient}"
-                                  Text="{Binding PortClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
-                        <ToggleButton Command="{Binding CmdSocketTcpClientConnect}" Grid.Column="5"
-                                      IsChecked="{Binding SocketclientConnected,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">Connect</ToggleButton>
+                                  ItemsSource="{Binding PortList}"
+                                  Text="{Binding Port,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
+                        <ToggleButton Command="{Binding ConnectCmd}" Grid.Column="5">Connect</ToggleButton>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox MinWidth="100" Grid.Row="0" Text="{Binding ClientSendData, Mode=TwoWay}" 
+                        <TextBox MinWidth="100" Grid.Row="0" Text="{Binding SendData, Mode=TwoWay}" 
                                  PreviewKeyDown="TextBox_PreviewKeyDown" Name="TxtBox1"
                                  AcceptsReturn="True"
                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <TextBox.InputBindings>
                                 <!--键盘事件绑定-->
-                                <KeyBinding Command="{Binding CmdSocketTcpClientSend}" Key="Enter"/>
+                                <KeyBinding Command="{Binding SendCmd}" Key="Enter"/>
                                 <!--鼠标事件绑定-->
                                 <!--<MouseBinding Command="{Binding ButtonClick}" MouseAction="LeftDoubleClick"/>-->
                             </TextBox.InputBindings>
                         </TextBox>
-                        <Button Command="{Binding CmdSocketTcpClientSend}" Grid.Column="1">Send
+                        <Button Command="{Binding SendCmd}" Grid.Column="1">Send
                         </Button>
                     </Grid>
                 </StackPanel>

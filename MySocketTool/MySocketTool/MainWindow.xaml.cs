@@ -30,13 +30,20 @@ namespace MySocketTool
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
                 {
                     if (e.PropertyName == "Trace")
-                        foreach (string msg in _trace.Trace)
+                        try
                         {
-                            //TxtAll.AppendText($"{DateTime.Now.ToString(" HH:mm:ss fff")} | {msg}");
-                            TxtAll.AppendText(msg);
-                            TxtCurrrent.Text = msg.Replace("\r", "").Replace("\n", "");
+                            foreach (string msg in _trace.Trace)
+                            {
+                                //TxtAll.AppendText($"{DateTime.Now.ToString(" HH:mm:ss fff")} | {msg}");
+                                TxtAll.AppendText(msg);
+                                TxtCurrrent.Text = msg.Replace("\r", "").Replace("\n", "");
+                            }
+                            _trace.Clear();
                         }
-                    _trace.Clear();
+                        catch(Exception)
+                        {
+
+                        }
                 }));
 
             });
