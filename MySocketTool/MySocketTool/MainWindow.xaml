@@ -35,7 +35,11 @@
             <TextBox IsReadOnly="True" MinWidth="100" Grid.Row="0"
                  Name="TxtAll" TextChanged="TxtAll_TextChanged"
                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
-            <ListView Grid.Row="2" MinHeight="50"></ListView>
+            <ListView Grid.Row="2" MinHeight="50" Name="ConnectionListVIew"
+                      DataContext="{Binding Source={StaticResource Locator}, Path=MyServer}"
+                      ItemsSource="{Binding ConnectionList}"
+                      SelectedValue="{Binding SelectedSession}"
+                      ></ListView>
             <StackPanel Orientation="Horizontal" Grid.Row="3">
                 <Button Click="Button_Click" Margin="0 0 5 0">Clear</Button>
                 <Button Command="{Binding Cmd2}" Margin="0 0 5 0">Btn2</Button>
@@ -49,10 +53,11 @@
         <GridSplitter Grid.Column="1" Width="3" Margin="2,0,2,0" Background="Purple"
                       VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
         <TabControl Grid.Column="0">
-            <TabItem Header="Server">
+            <TabItem Header="Server" DataContext="{Binding Source={StaticResource Locator}, Path=MyServer}">
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -62,30 +67,31 @@
                         <TextBlock Grid.Column="0" Text="IP:"/>
                         <TextBlock Grid.Column="2" Text="Port:"/>
                         <ComboBox Grid.Column="1" IsEditable="True" SelectedIndex="0" 
-                                  ItemsSource="{Binding DefaultIPList}"
-                                  Text="{Binding IpServer,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
+                                  ItemsSource="{Binding IpList}"
+                                  Text="{Binding Ip,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
                         <ComboBox Grid.Column="3" IsEditable="True" SelectedIndex="0"
-                                  ItemsSource="{Binding DefaultPortList}"
-                                  Text="{Binding PortServer,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
-                        <ToggleButton Command="{Binding CmdSocketTcpServerListen}" Grid.Column="4">Listen</ToggleButton>
+                                  ItemsSource="{Binding PortList}"
+                                  Text="{Binding Port,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></ComboBox>
+                        <ToggleButton Command="{Binding ConnectCmd}" Grid.Column="4">Listen</ToggleButton>
+                        <ToggleButton Command="{Binding DebugCmd}" Grid.Column="5">Debug</ToggleButton>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox MinWidth="100" Grid.Row="0" Text="{Binding ServerSendData, Mode=TwoWay}" 
+                        <TextBox MinWidth="100" Grid.Row="0" Text="{Binding SendData, Mode=TwoWay}" 
                                  PreviewKeyDown="TxtBox2_PreviewKeyDown"  Name="TxtBox2"
                                  AcceptsReturn="True"
                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <TextBox.InputBindings>
                                 <!--键盘事件绑定-->
-                                <KeyBinding Command="{Binding CmdSocketTcpClientSend}" Key="Enter"/>
+                                <KeyBinding Command="{Binding SendCmd}" Key="Enter"/>
                                 <!--鼠标事件绑定-->
                                 <!--<MouseBinding Command="{Binding ButtonClick}" MouseAction="LeftDoubleClick"/>-->
                             </TextBox.InputBindings>
                         </TextBox>
-                        <Button Command="{Binding CmdSocketTcpServerSend}" Grid.Column="1">Send
+                        <Button Command="{Binding SendCmd}" Grid.Column="1">Send
                         </Button>
                     </Grid>
                 </StackPanel>

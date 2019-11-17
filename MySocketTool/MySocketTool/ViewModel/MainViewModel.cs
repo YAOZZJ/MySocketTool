@@ -16,16 +16,6 @@ namespace MySocketTool.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            DefaultPortList = new ObservableCollection<int>()
-                {
-                    9600,2333
-                };
-            DefaultIPList = new ObservableCollection<string>()
-            {
-            "127.0.0.1",
-            "192.168.250.1",
-            "192.168.250.10"
-            };
             DefaultPortListClient = new ObservableCollection<int>()
                 {
                     9600,2333
@@ -50,16 +40,6 @@ namespace MySocketTool.ViewModel
             if (!SocketclientConnected || string.IsNullOrEmpty(ClientSendData)) return;
             _client.Send(ClientSendData);
         }
-        void ActionTcpServerListen()
-        {
-            if (_server == null) _server = new MyServer();
-            _server.Listen();
-        }
-        void ActionTcpServerSend()
-        {
-            if (_server == null || string.IsNullOrEmpty(ServerSendData)) return;
-            _server.Send(ServerSendData, Encoding.Default);
-        }
         void Action1()
         {
             Message("Main | " + MethodBase.GetCurrentMethod().Name);
@@ -69,10 +49,6 @@ namespace MySocketTool.ViewModel
         {
             //Message("Main | " + MethodBase.GetCurrentMethod().Name);
             //foreach(string ip in NetHelper.GetLocalIP())
-            foreach(var end in _server.RemoteEndPointList)
-            {
-                Message("Main | " + end.ToString());
-            }
         }
         void Action3()
         {
@@ -95,11 +71,8 @@ namespace MySocketTool.ViewModel
         #endregion
 
         #region "Variable"
-        MyServer _server;
         MyClient _client;
 
-        int _portServer;
-        string _ipServer;
         int _portClient;
         string _ipClient;
         #endregion
@@ -112,20 +85,13 @@ namespace MySocketTool.ViewModel
         RelayCommand cmd5;
         RelayCommand cmdSocketTcpClientConnect;
         RelayCommand cmdSocketTcpClientSend;
-        RelayCommand cmdSocketTcpServerListen;
-        RelayCommand cmdSocketTcpServerSend;
         #endregion
 
         #region "Public"
 
-        public string ServerSendData { get; set; }
         public string ClientSendData { get; set; }
-        public int PortServer { get => _portServer; set => Set(ref _portServer, value); }
-        public string IpServer { get => _ipServer; set => Set(ref _ipServer,value); }
         public int PortClient { get => _portClient; set => Set(ref _portClient,value); }
         public string IpClient { get => _ipClient; set => Set(ref _ipClient,value); }
-        public ObservableCollection<int> DefaultPortList { get; set; }
-        public ObservableCollection<string> DefaultIPList { get; set; }
         public ObservableCollection<int> DefaultPortListClient { get; set; }
         public ObservableCollection<string> DefaultIPListClient { get; set; }
         public bool SocketclientConnected { get => _client == null ? false : _client.Connected;  }
@@ -137,8 +103,6 @@ namespace MySocketTool.ViewModel
         public RelayCommand Cmd5 { get => cmd5 ?? (cmd5 = new RelayCommand(Action5)); }
         public RelayCommand CmdSocketTcpClientConnect { get => cmdSocketTcpClientConnect ?? (cmdSocketTcpClientConnect = new RelayCommand(ActionTcpClientConnect)); }
         public RelayCommand CmdSocketTcpClientSend { get => cmdSocketTcpClientSend ?? (cmdSocketTcpClientSend = new RelayCommand(ActionTcpClientSend)); }
-        public RelayCommand CmdSocketTcpServerListen { get => cmdSocketTcpServerListen ?? (cmdSocketTcpServerListen = new RelayCommand(ActionTcpServerListen)); }
-        public RelayCommand CmdSocketTcpServerSend { get => cmdSocketTcpServerSend ?? (cmdSocketTcpServerSend = new RelayCommand(ActionTcpServerSend)); }
         
 
         #endregion

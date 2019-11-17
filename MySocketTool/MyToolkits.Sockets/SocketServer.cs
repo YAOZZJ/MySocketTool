@@ -43,7 +43,7 @@ namespace MyToolkits.Sockets
         private Socket _socket { get; set; } = null;
         private string _ip { get; set; } = "";
         private int _port { get; set; } = 0;
-        private bool _isListen { get; set; } = true;
+        private bool _isListen = false;
         private void StartListen()
         {
             try
@@ -55,7 +55,7 @@ namespace MyToolkits.Sockets
                         Socket newSocket = _socket.EndAccept(asyncResult);//异步接受传入的连接尝试。
 
                         //马上进行下一轮监听,增加吞吐量
-                        if (_isListen)
+                        if (IsListen)
                             StartListen();
 
                         SocketConnection newConnection = new SocketConnection(newSocket, this)
@@ -115,6 +115,7 @@ namespace MyToolkits.Sockets
                 //--------------------------------------------------------------------------------------
                 //开始监听客户端
                 StartListen();
+                _isListen = true;
                 HandleServerStarted?.BeginInvoke(this, null, null);
             }
             catch (Exception ex)
@@ -126,14 +127,20 @@ namespace MyToolkits.Sockets
         /// 发送数据
         /// </summary>
         /// <param name="bytes">数据字节</param>
-        public void Send(byte[] bytes)
+        public void Send(byte[] bytes,string remoteEndpoint = null)
         {
             try
             {
                 //LinkedListNode<SocketConnection> node = _clientList.First;
                 //node.Value.Send(bytes);
-                foreach(var node in GetConnectionList())
+                if(string.IsNullOrEmpty(remoteEndpoint))
+                    foreach(var node in GetConnectionList())
+                    {
+                        node.Send(bytes);
+                    }
+                else
                 {
+                    var node = GetTheConnection(session => session.RemoteEndPoint.ToString() == remoteEndpoint);
                     node.Send(bytes);
                 }
             }
@@ -147,9 +154,9 @@ namespace MyToolkits.Sockets
         /// 发送字符串（默认使用UTF-8编码）
         /// </summary>
         /// <param name="msgStr">字符串</param>
-        public void Send(string msgStr)
+        public void Send(string msgStr, string remoteEndpoint = null)
         {
-            Send(Encoding.Default.GetBytes(msgStr));
+            Send(Encoding.Default.GetBytes(msgStr), remoteEndpoint);
         }
 
         /// <summary>
@@ -328,6 +335,7 @@ namespace MyToolkits.Sockets
         /// 客户端连接关闭后回调
         /// </summary>
         public Action<SocketConnection, SocketServer> HandleClientClose { get; set; }
+        public bool IsListen { get => _isListen; set => _isListen = value; }
 
         #endregion
 
